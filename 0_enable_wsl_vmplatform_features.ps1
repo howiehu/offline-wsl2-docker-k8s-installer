@@ -66,22 +66,6 @@ if ($VMPlatformFeature.State -eq "Enabled") {
     Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart
 }
 
-# 检查WSL2 Linux内核更新包是否已在依赖文件夹中
-$WslUpdatePath = Join-Path -Path $DependenciesPath -ChildPath "wsl_update_x64.msi"
-if (Test-Path -Path $WslUpdatePath) {
-    Write-Host "正在安装WSL2 Linux内核更新包..."
-    Start-Process "msiexec.exe" -ArgumentList "/i `"C:\Users\huhao\myprojects\offline-wsl2-docker-k8s-installer\dependencies\wsl_update_x64.msi`" /quiet /norestart" -Wait
-} else {
-    Write-Host "WSL2 Linux内核更新包未找到，请将其放到 `"$DependenciesPath`" 目录下。"
-    Pause
-    Exit
-}
-
-# 设置WSL2为默认版本
-Write-Host "正在设置WSL2为默认版本..."
-wsl --set-default-version 2
-
-# 完成安装后的消息
-Write-Host "WSL2安装完成。请在重新启动后使用WSL2。"
+Write-Host "请重新启动计算机，以完成WSL与虚拟机平台功能的启用。"
 
 Pause
