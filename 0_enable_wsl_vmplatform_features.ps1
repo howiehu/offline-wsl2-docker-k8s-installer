@@ -44,10 +44,6 @@ if ($Win11Detected) {
 # 如果系统版本符合要求，执行后续命令
 Write-Host "当前Windows操作系统版本满足最低安装条件，开始执行安装程序……"
 
-# 获取脚本所在的目录路径
-$ScriptPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$DependenciesPath = Join-Path -Path $ScriptPath -ChildPath "dependencies"
-
 # 检查WSL功能是否已经开启或需要重启
 $WSLFeature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 if ($WSLFeature.State -eq "Enabled") {
