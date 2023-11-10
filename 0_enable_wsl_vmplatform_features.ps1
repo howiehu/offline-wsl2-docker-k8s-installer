@@ -12,6 +12,8 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 # 脚本的主体部分，它会以管理员权限执行...
 
+Write-Host "正在检查操作系统版本..."
+
 # 检测操作系统是否为64位
 if (![Environment]::Is64BitOperatingSystem) {
     Write-Host "本脚本需要64位操作系统方可执行。"
@@ -42,9 +44,9 @@ if ($Win11Detected) {
 }
 
 # 如果系统版本符合要求，执行后续命令
-Write-Host "当前Windows操作系统版本满足最低安装条件，开始执行安装程序……"
+Write-Host "当前Windows操作系统版本满足最低安装条件，开始执行安装程序..."
 
-# 检查WSL功能是否已经开启或需要重启
+# 检查WSL功能是否已经开启
 $WSLFeature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 if ($WSLFeature.State -eq "Enabled") {
     Write-Host "WSL功能已经开启。"
@@ -53,7 +55,7 @@ if ($WSLFeature.State -eq "Enabled") {
     Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -All -NoRestart
 }
 
-# 检查虚拟机平台功能是否已经开启或需要重启
+# 检查虚拟机平台功能是否已经开启
 $VMPlatformFeature = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 if ($VMPlatformFeature.State -eq "Enabled") {
     Write-Host "虚拟机平台功能已经开启。"
@@ -62,6 +64,14 @@ if ($VMPlatformFeature.State -eq "Enabled") {
     Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart
 }
 
-Write-Host "请重新启动计算机，以完成WSL与虚拟机平台功能的启用。"
+. (Join-Path $PSScriptRoot 'functions\Get-PendingRebootStatus.ps1')
+
+# 根据重启标志判断是否需要提示用户重启计算机
+$rebootStatus = Get-PendingRebootStatus
+if ($rebootStatus) {
+    Write-Host "检测到重启需要，请重新启动计算机，以完成对WSL和虚拟机平台功能的启用。"
+} else {
+    Write-Host "WSL和虚拟机平台功能已启用，无需重新启动计算机。"
+}
 
 Pause

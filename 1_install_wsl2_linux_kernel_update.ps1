@@ -13,11 +13,10 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 # 脚本的主体部分，它会以管理员权限执行...
 
 # 获取脚本所在的目录路径
-$ScriptPath = Split-Path -Parent $MyInvocation.MyCommand.Definition
-$DependenciesPath = Join-Path -Path $ScriptPath -ChildPath "dependencies"
+$DependenciesPath = Join-Path $PSScriptRoot 'dependencies'
 
 # 检查WSL2 Linux内核更新包是否已在依赖文件夹中
-$WslUpdatePath = Join-Path -Path $DependenciesPath -ChildPath "wsl_update_x64.msi"
+$WslUpdatePath = Join-Path $DependenciesPath "wsl_update_x64.msi"
 if (Test-Path -Path $WslUpdatePath) {
     Write-Host "正在安装WSL2 Linux内核更新包..."
     Start-Process "msiexec.exe" -ArgumentList "/i `"C:\Users\huhao\myprojects\offline-wsl2-docker-k8s-installer\dependencies\wsl_update_x64.msi`" /quiet /norestart" -Wait
