@@ -68,7 +68,7 @@ if ($VMPlatformFeature.State -eq "Enabled") {
 
 # 根据重启标志判断是否需要提示用户重启计算机
 $rebootStatus = Get-PendingRebootStatus
-if ($rebootStatus) {
+if ($rebootStatus.PendingReboot) {
     Write-Host "检测到重启需要，请重新启动计算机，以完成对WSL和虚拟机平台功能的启用。"
 } else {
     Write-Host "WSL和虚拟机平台功能已启用，无需重新启动计算机。"
