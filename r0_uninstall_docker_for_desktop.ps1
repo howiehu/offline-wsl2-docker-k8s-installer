@@ -28,7 +28,12 @@ if (Test-Path -Path $InstallerPath) {
     Exit
 }
 
-# 完成安装后的消息
-Write-Host "Docker for Desktop卸载完成。"
+# 根据重启标志判断是否需要提示用户重启计算机
+$rebootStatus = Get-PendingRebootStatus
+if ($rebootStatus.PendingReboot) {
+    Write-Host "检测到重启需要，请重新启动计算机，以完成Docker for Desktop的卸载。"
+} else {
+    Write-Host "Docker for Desktop卸载完成。"
+}
 
 Pause

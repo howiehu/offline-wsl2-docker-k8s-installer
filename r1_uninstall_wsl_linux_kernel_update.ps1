@@ -12,23 +12,22 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 # 脚本的主体部分，它会以管理员权限执行...
 
-Write-Host "正在回滚WSL2 Linux内核更新包安装..."
+Write-Host "正在回滚WSL2安装..."
 
-# 获取脚本所在的目录路径
-$DependenciesPath = Join-Path $PSScriptRoot 'dependencies'
+# 检查WSL2安装包是否已在依赖文件夹中
+Write-Host "正在卸载WSL2的APPX安装..."
+Get-AppxPackage MicrosoftCorporationII.WindowsSubsystemForLinux | Remove-AppxPackage
+Write-Host "正在卸载WSL2的MSI安装..."
+Start-Process "msiexec.exe" -ArgumentList "/x '{408A5C50-34F2-4025-968E-A21D6A515D48}' /quiet /norestart" -Wait
 
-# 检查WSL2 Linux内核更新包是否已在依赖文件夹中
-$WslUpdatePath = Join-Path $DependenciesPath "wsl_update_x64.msi"
-if (Test-Path -Path $WslUpdatePath) {
-    Write-Host "正在卸载WSL2 Linux内核更新包..."
-    Start-Process "msiexec.exe" -ArgumentList "/x `"$WslUpdatePath`" /quiet /norestart" -Wait
+. (Join-Path $PSScriptRoot 'functions\Get-PendingRebootStatus.ps1')
+
+# 根据重启标志判断是否需要提示用户重启计算机
+$rebootStatus = Get-PendingRebootStatus
+if ($rebootStatus.PendingReboot) {
+    Write-Host "检测到重启需要，请重新启动计算机，以完成WSL2的卸载。"
 } else {
-    Write-Host "WSL2 Linux内核更新包未找到，请将其放到 `"$DependenciesPath`" 目录下。"
-    Pause
-    Exit
+    Write-Host "WSL2已卸载，无需重新启动计算机。"
 }
-
-# 完成安装后的消息
-Write-Host "WSL2 Linux内核更新卸载完成。"
 
 Pause

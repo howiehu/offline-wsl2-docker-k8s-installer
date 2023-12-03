@@ -46,22 +46,13 @@ if ($Win11Detected) {
 # 如果系统版本符合要求，执行后续命令
 Write-Host "当前Windows操作系统版本满足最低安装条件，开始执行安装程序..."
 
-# 检查WSL功能是否已经开启
-$WSLFeature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-if ($WSLFeature.State -eq "Enabled") {
-    Write-Host "WSL功能已经开启。"
-} else {
-    Write-Host "正在启用WSL功能..."
-    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux -All -NoRestart
-}
-
 # 检查虚拟机平台功能是否已经开启
 $VMPlatformFeature = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 if ($VMPlatformFeature.State -eq "Enabled") {
     Write-Host "虚拟机平台功能已经开启。"
 } else {
     Write-Host "正在启用虚拟机平台功能..."
-    Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All -NoRestart
+    Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -All
 }
 
 . (Join-Path $PSScriptRoot 'functions\Get-PendingRebootStatus.ps1')

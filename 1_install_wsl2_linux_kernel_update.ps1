@@ -12,16 +12,6 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 # 脚本的主体部分，它会以管理员权限执行...
 
-# 检查WSL功能是否已经开启
-$WSLFeature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-if ($WSLFeature.State -eq "Enabled") {
-    Write-Host "WSL功能已经开启。"
-} else {
-    Write-Host "请先运行前置脚本，启用WSL功能！"
-    Pause
-    Exit
-}
-
 # 检查虚拟机平台功能是否已经开启
 $VMPlatformFeature = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 if ($VMPlatformFeature.State -eq "Enabled") {
@@ -35,13 +25,13 @@ if ($VMPlatformFeature.State -eq "Enabled") {
 # 获取脚本所在的目录路径
 $DependenciesPath = Join-Path $PSScriptRoot 'dependencies'
 
-# 检查WSL2 Linux内核更新包是否已在依赖文件夹中
-$WslUpdatePath = Join-Path $DependenciesPath "wsl_update_x64.msi"
-if (Test-Path -Path $WslUpdatePath) {
-    Write-Host "正在安装WSL2 Linux内核更新包..."
-    Start-Process "msiexec.exe" -ArgumentList "/i `"$WslUpdatePath`" /quiet /norestart" -Wait
+# 检查WSL2安装包是否已在依赖文件夹中
+$WSL2Path = Join-Path $DependenciesPath "Microsoft.WSL_2.0.9.0_x64.msix"
+if (Test-Path -Path $WSL2Path) {
+    Write-Host "正在安装WSL2..."
+    Add-AppxPackage -Path $WSL2Path
 } else {
-    Write-Host "WSL2 Linux内核更新包未找到，请将其放到 `"$DependenciesPath`" 目录下。"
+    Write-Host "WSL2安装包未找到，请将其放到 `"$DependenciesPath`" 目录下，并命名为：Microsoft.WSL_2.0.9.0_x64.msix"
     Pause
     Exit
 }
@@ -50,7 +40,14 @@ if (Test-Path -Path $WslUpdatePath) {
 Write-Host "设置WSL2为默认版本..."
 wsl --set-default-version 2
 
-# 完成安装后的消息
-Write-Host "WSL2 Linux内核更新安装完成。"
+. (Join-Path $PSScriptRoot 'functions\Get-PendingRebootStatus.ps1')
+
+# 根据重启标志判断是否需要提示用户重启计算机
+$rebootStatus = Get-PendingRebootStatus
+if ($rebootStatus.PendingReboot) {
+    Write-Host "检测到重启需要，请重新启动计算机，以完成WSL2的安装。"
+} else {
+    Write-Host "WSL2安装完成，无需重新启动计算机。"
+}
 
 Pause

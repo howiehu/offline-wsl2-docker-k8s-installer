@@ -12,16 +12,6 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 # 脚本的主体部分，它会以管理员权限执行...
 
-# 检查WSL功能是否已经开启
-$WSLFeature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
-if ($WSLFeature.State -eq "Enabled") {
-    Write-Host "WSL功能已经开启。"
-} else {
-    Write-Host "请先运行前置脚本，启用WSL功能！"
-    Pause
-    Exit
-}
-
 # 检查虚拟机平台功能是否已经开启
 $VMPlatformFeature = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
 if ($VMPlatformFeature.State -eq "Enabled") {
@@ -39,7 +29,6 @@ $DependenciesPath = Join-Path $PSScriptRoot 'dependencies'
 $InstallerPath = Join-Path $DependenciesPath "Docker Desktop Installer.exe"
 if (Test-Path -Path $InstallerPath) {
     Write-Host "正在安装Docker for Desktop..."
-    Write-Host $InstallerPath
     Start-Process `"$InstallerPath`" -ArgumentList 'install --quiet --accept-license' -Wait
 } else {
     Write-Host "Docker for Desktop安装包未找到，请将其放到 `"$DependenciesPath`" 目录下，并命名为：Docker Desktop Installer.exe"
@@ -49,5 +38,14 @@ if (Test-Path -Path $InstallerPath) {
 
 # 完成安装后的消息
 Write-Host "Docker for Desktop安装完成，请重新启动计算机后使用。"
+. (Join-Path $PSScriptRoot 'functions\Get-PendingRebootStatus.ps1')
+
+# 根据重启标志判断是否需要提示用户重启计算机
+$rebootStatus = Get-PendingRebootStatus
+if ($rebootStatus.PendingReboot) {
+    Write-Host "检测到重启需要，请重新启动计算机，以完成Docker for Desktop的安装。"
+} else {
+    Write-Host "Docker for Desktop安装完成，请注销并重新登录当前用户后使用。"
+}
 
 Pause
