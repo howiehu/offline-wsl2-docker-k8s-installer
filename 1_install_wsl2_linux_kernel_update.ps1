@@ -15,29 +15,15 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 # 获取脚本所在的目录路径
 $DependenciesPath = Join-Path $PSScriptRoot 'dependencies'
 
-# 检查WSL是否已经安装
-$wslInstalled = (wsl --list --quiet 2>&1 | Measure-Object -Line).Lines -gt 1
-
-# 检查WSL2 Linux内核更新是否已经安装
-$wsl2KernelInstalled = $false
-if ($wslInstalled) {
-    $wsl2KernelInstalled = ((wsl --set-default-version 2 2>&1 | Select-String -Pattern "WSL 2 requires an update to its kernel component").Count -eq 0) -and ((wsl --set-default-version 2 2>&1 | Select-String -Pattern "WSL 2 需要更新其内核组件").Count -eq 0)
-}
-
-# 如果WSL或WSL2 Linux内核更新已经安装，那么不需要再安装wsl_update_x64.msi
-if ($wslInstalled -or $wsl2KernelInstalled) {
-    Write-Host "WSL或WSL2 Linux内核更新已经安装，跳过安装wsl_update_x64.msi"
+# 检查WSL2 Linux内核更新包是否已在依赖文件夹中
+$WslUpdatePath = Join-Path $DependenciesPath "wsl_update_x64.msi"
+if (Test-Path -Path $WslUpdatePath) {
+    Write-Host "正在安装WSL2 Linux内核更新包..."
+    Start-Process "msiexec.exe" -ArgumentList "/i `"C:\Users\huhao\myprojects\offline-wsl2-docker-k8s-installer\dependencies\wsl_update_x64.msi`" /quiet /norestart" -Wait
 } else {
-    # 检查WSL2 Linux内核更新包是否已在依赖文件夹中
-    $WslUpdatePath = Join-Path $DependenciesPath "wsl_update_x64.msi"
-    if (Test-Path -Path $WslUpdatePath) {
-        Write-Host "正在安装WSL2 Linux内核更新包..."
-        Start-Process "msiexec.exe" -ArgumentList "/i `"C:\Users\huhao\myprojects\offline-wsl2-docker-k8s-installer\dependencies\wsl_update_x64.msi`" /quiet /norestart" -Wait
-    } else {
-        Write-Host "WSL2 Linux内核更新包未找到，请将其放到 `"$DependenciesPath`" 目录下。"
-        Pause
-        Exit
-    }
+    Write-Host "WSL2 Linux内核更新包未找到，请将其放到 `"$DependenciesPath`" 目录下。"
+    Pause
+    Exit
 }
 
 # 设置WSL2为默认版本
