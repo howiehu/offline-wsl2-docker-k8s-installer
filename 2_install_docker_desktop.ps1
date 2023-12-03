@@ -25,27 +25,25 @@ if ($VMPlatformFeature.State -eq "Enabled") {
 # 获取脚本所在的目录路径
 $DependenciesPath = Join-Path $PSScriptRoot 'dependencies'
 
-# 检查Docker for Desktop安装包是否已在依赖文件夹中
+# 检查Docker Desktop安装包是否已在依赖文件夹中
 $InstallerPath = Join-Path $DependenciesPath "Docker Desktop Installer.exe"
 if (Test-Path -Path $InstallerPath) {
-    Write-Host "正在安装Docker for Desktop..."
+    Write-Host "正在安装Docker Desktop..."
     Start-Process `"$InstallerPath`" -ArgumentList 'install --quiet --accept-license' -Wait
 } else {
-    Write-Host "Docker for Desktop安装包未找到，请将其放到 `"$DependenciesPath`" 目录下，并命名为：Docker Desktop Installer.exe"
+    Write-Host "Docker Desktop安装包未找到，请将其放到 `"$DependenciesPath`" 目录下，并命名为：Docker Desktop Installer.exe"
     Pause
     Exit
 }
 
-# 完成安装后的消息
-Write-Host "Docker for Desktop安装完成，请重新启动计算机后使用。"
 . (Join-Path $PSScriptRoot 'functions\Get-PendingRebootStatus.ps1')
 
 # 根据重启标志判断是否需要提示用户重启计算机
 $rebootStatus = Get-PendingRebootStatus
 if ($rebootStatus.PendingReboot) {
-    Write-Host "检测到重启需要，请重新启动计算机，以完成Docker for Desktop的安装。"
+    Write-Host "检测到重启需要，请重新启动计算机，以完成Docker Desktop的安装。"
 } else {
-    Write-Host "Docker for Desktop安装完成，请注销并重新登录当前用户后使用。"
+    Write-Host "Docker Desktop安装完成，请注销并重新登录当前用户后使用。"
 }
 
 Pause
