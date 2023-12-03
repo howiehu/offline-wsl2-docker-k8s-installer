@@ -1,10 +1,18 @@
 # 离线WSL2、Docker、K8s安装工具（Offline WSL2/Docker/K8s Installer）
 
-作者正被Windows下如:shit:一般的自动化运维能力，以及各大企业如:shit:一般的开发者体验所折磨，没有心思认真写README，也还没心思实现K8s部分的安装。
+**注意：本安装工具仅会安装Docker所依赖的WSL2必要组件，不会安装Linux发行版（例如Ubuntu），如有需要请自行研究安装。**
 
-**注意：本安装工具仅会安装Docker所依赖的组件，不会安装Linux发行版（例如Ubuntu），如有需要请自行研究安装。**
+本工具在以下环境下测试通过：
+
+- PowerShell：7.3.9
+- Windows 版本： 10.0.22631.2715
+- WSL2 版本： 2.0.9.0
+- WSL2 Linux内核版本： 5.15.133.1-1
+- Docker for Desktop：4.25.2
 
 ## 吃:shit:记录
+
+> 作者正被Windows下如:shit:一般的自动化运维能力，以及各大企业如:shit:一般的开发者体验所折磨，没有心思认真写README，也还没心思实现K8s部分的安装。
 
 - 不论是exe还是msi还是appx以及wsl的命令行本身，都没有足够友好的状态码供判断，必须使用各种取巧方法，而且不给你就不给，输出你还多语言是个什么鬼~
 - 截止本安装工具测试时间为止，Microsoft Store版本的PowerShell版本的PowerShell存在[无法正常关联`*.ps1`脚本文件的问题](https://github.com/PowerShell/PowerShell/issues/20039)。
@@ -31,12 +39,12 @@
 
 #### 安装（Install）
 
-1. `0_enable_wsl_vmplatform_features.ps1` - 开启Windows自带的WSL和虚拟机平台功能。
-2. `1_install_wsl2_linux_kernel_update.ps1` - 安装WSL2 Linux内核更新程序（如果当前的WSL2 Linux内核版本更高则会跳过安装）。
+1. `0_enable_vmplatform_feature.ps1` - 开启Windows自带的虚拟机平台功能。
+2. `1_install_wsl2.ps1` - 安装WSL2。
 3. `2_install_docker_for_desktop.ps1` - 安装并配置Docker for Desktop。
 
 #### 卸载（Uninstall）
 
 1. `r0_uninstall_docker_for_desktop.ps1` - 卸载Docker for Desktop。
-2. `r1_uninstall_wsl_linux_kernel_update.ps1` - 卸载WSL2 Linux内核更新程序。
-3. `r2_disable_wsl_vmplatform_features.ps1` - 关闭Windows自带的WSL和虚拟机平台功能。
+2. `r1_uninstall_2.ps1` - 卸载WSL2。
+3. `r2_disable_vmplatform_feature.ps1` - 关闭Windows自带的虚拟机平台功能。
