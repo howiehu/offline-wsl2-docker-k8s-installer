@@ -12,6 +12,26 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 
 # 脚本的主体部分，它会以管理员权限执行...
 
+# 检查WSL功能是否已经开启
+$WSLFeature = Get-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+if ($WSLFeature.State -eq "Enabled") {
+    Write-Host "WSL功能已经开启。"
+} else {
+    Write-Host "请先运行前置脚本，启用WSL功能！"
+    Pause
+    Exit
+}
+
+# 检查虚拟机平台功能是否已经开启
+$VMPlatformFeature = Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform
+if ($VMPlatformFeature.State -eq "Enabled") {
+    Write-Host "虚拟机平台功能已经开启。"
+} else {
+    Write-Host "请先运行前置脚本，启用虚拟机平台功能！"
+    Pause
+    Exit
+}
+
 # 获取脚本所在的目录路径
 $DependenciesPath = Join-Path $PSScriptRoot 'dependencies'
 
@@ -29,8 +49,6 @@ if (Test-Path -Path $WslUpdatePath) {
 # 设置WSL2为默认版本
 Write-Host "设置WSL2为默认版本..."
 wsl --set-default-version 2
-
-wsl --status
 
 # 完成安装后的消息
 Write-Host "WSL2 Linux内核更新安装完成。"
