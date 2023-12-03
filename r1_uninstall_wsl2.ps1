@@ -18,7 +18,7 @@ Write-Host "正在回滚WSL2安装..."
 Write-Host "正在卸载WSL2的APPX安装..."
 Get-AppxPackage MicrosoftCorporationII.WindowsSubsystemForLinux | Remove-AppxPackage
 Write-Host "正在卸载WSL2的MSI安装..."
-Start-Process "msiexec.exe" -ArgumentList "/x '{408A5C50-34F2-4025-968E-A21D6A515D48}' /quiet /norestart" -Wait
+Start-Process "msiexec.exe" -ArgumentList '/uninstall "{408A5C50-34F2-4025-968E-A21D6A515D48}" /quiet /norestart' -Wait
 
 . (Join-Path $PSScriptRoot 'functions\Get-PendingRebootStatus.ps1')
 

@@ -17,13 +17,13 @@ Write-Host "正在回滚Docker Desktop安装..."
 # 获取脚本所在的目录路径
 $DependenciesPath = Join-Path $PSScriptRoot 'dependencies'
 
-# 检查Docker Desktop安装包是否已在依赖文件夹中
-$InstallerPath = Join-Path $DependenciesPath "Docker Desktop Installer.exe"
+# 检查Docker Desktop是否已经安装
+$InstallerPath = "C:\Program Files\Docker\Docker\Docker Desktop Installer.exe"
 if (Test-Path -Path $InstallerPath) {
     Write-Host "正在卸载Docker Desktop..."
     Start-Process `"$InstallerPath`" -ArgumentList 'uninstall --quiet' -Wait
 } else {
-    Write-Host "Docker Desktop安装包未找到，请将其放到 `"$DependenciesPath`" 目录下，并命名为：Docker Desktop Installer.exe"
+    Write-Host "Docker Desktop未安装。"
     Pause
     Exit
 }
