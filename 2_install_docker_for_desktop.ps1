@@ -35,22 +35,19 @@ if ($VMPlatformFeature.State -eq "Enabled") {
 # 获取脚本所在的目录路径
 $DependenciesPath = Join-Path $PSScriptRoot 'dependencies'
 
-# 检查WSL2 Linux内核更新包是否已在依赖文件夹中
-$WslUpdatePath = Join-Path $DependenciesPath "wsl_update_x64.msi"
-if (Test-Path -Path $WslUpdatePath) {
-    Write-Host "正在安装WSL2 Linux内核更新包..."
-    Start-Process "msiexec.exe" -ArgumentList "/i `"$WslUpdatePath`" /quiet /norestart" -Wait
+# 检查Docker for Desktop安装包是否已在依赖文件夹中
+$InstallerPath = Join-Path $DependenciesPath "Docker Desktop Installer.exe"
+if (Test-Path -Path $InstallerPath) {
+    Write-Host "正在安装Docker for Desktop..."
+    Write-Host $InstallerPath
+    Start-Process `"$InstallerPath`" -ArgumentList 'install --quiet --accept-license' -Wait
 } else {
-    Write-Host "WSL2 Linux内核更新包未找到，请将其放到 `"$DependenciesPath`" 目录下。"
+    Write-Host "Docker for Desktop安装包未找到，请将其放到 `"$DependenciesPath`" 目录下，并命名为：Docker Desktop Installer.exe"
     Pause
     Exit
 }
 
-# 设置WSL2为默认版本
-Write-Host "设置WSL2为默认版本..."
-wsl --set-default-version 2
-
 # 完成安装后的消息
-Write-Host "WSL2 Linux内核更新安装完成。"
+Write-Host "Docker for Desktop安装完成，请重新启动计算机后使用。"
 
 Pause
