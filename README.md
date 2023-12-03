@@ -10,9 +10,9 @@
 - WSL2 Linux内核版本： 5.15.133.1-1
 - Docker Desktop：4.25.2
 
-## 吃:shit:记录
+## 吃 :shit: 记录
 
-> 作者正被Windows下如:shit:一般的自动化运维能力，以及各大企业如:shit:一般的开发者体验所折磨，没有心思认真写README，也还没心思实现K8s部分的安装。
+> 作者正被Windows下如 :shit: 一般的自动化运维能力，以及各大企业如 :shit: 一般的开发者体验所折磨，没有心思认真写README，也还没心思实现K8s部分的安装。
 
 - 不论是exe还是msi还是appx以及wsl的命令行本身，都没有足够友好的状态码供判断，必须使用各种取巧方法，而且不给你就不给，输出你还多语言是个什么鬼~
 - 截止本安装工具测试时间为止，Microsoft Store版本的PowerShell版本的PowerShell存在[无法正常关联`*.ps1`脚本文件的问题](https://github.com/PowerShell/PowerShell/issues/20039)。
@@ -31,7 +31,7 @@
 
 ## 使用方法（Usage）
 
-1. 手动安装本安装工具所附带的（或自行下载的）PowerShell。（**需要注意，请不要安装并使用Microsoft Store版本的PowerShell，问题请见前述“[吃:shit:记录](##吃:shit:记录)”**）
+1. 手动安装本安装工具所附带的（或自行下载的）PowerShell。（**需要注意，请不要安装并使用Microsoft Store版本的PowerShell，问题请见前述“吃 :shit: 记录”**）
 2. 选择使用`C:\Program Files\PowerShell\7\pwsh.exe`（默认路径）作为`*.ps1`脚本文件的默认运行程序。
 3. 使用PowerShell，通过手动点击或在命令行中按下方所述顺序运行相应的`*.ps1`脚本文件。
 
